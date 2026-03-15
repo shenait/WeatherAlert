@@ -149,7 +149,9 @@ function App() {
         daily: "temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max",
         temperature_unit: u === "metric" ? "celsius" : "fahrenheit",
         wind_speed_unit: u === "metric" ? "kmh" : "mph",
-        precipitation_unit: "mm", timezone: "auto", forecast_days: 7
+        precipitation_unit: "mm", 
+        timezone: "America/Grenada",
+        forecast_days: 7
       });
       const response = await fetch(`${OPENMETEO_BASE}?${params}`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
