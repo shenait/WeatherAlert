@@ -4,7 +4,6 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
-// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -13,14 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/Database.php';
 
-// Initialize database
 $db = new Database();
 
-// Get the request path and method
 $request_method = $_SERVER['REQUEST_METHOD'];
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Remove /api prefix and /index.php if present
 $path = str_replace('/api', '', $request_uri);
 $path = str_replace('/index.php', '', $path);
 $path = trim($path, '/');
