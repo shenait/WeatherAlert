@@ -1,59 +1,58 @@
 <?php
 class Database {
-    private $connection;
-    
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
+    private $port;
+    private $conn;
+
     public function __construct() {
-        try {
-            $this->connection = new PDO(
-                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME,
-                DB_USER,
-                DB_PASS,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-        } catch(PDOException $e) {
-            die(json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]));
+        // Check if DATABASE_URL exists (Render)
+        $databaseUrl = getenv('DATABASE_URL');
+        
+        if ($databaseUrl) {
+            // Parse Render's DATABASE_URL
+            $dbparts = parse_url($databaseUrl);
+            $this->host = $dbparts['host'];
+            $this->port = $dbparts['port'];
+            $this->db_name = ltrim($dbparts['path'], '/');
+            $this->username = $dbparts['user'];
+            $this->password = $dbparts['pass'];
+        } else {
+            // Local development
+            $this->host = getenv('DB_HOST') ?: 'localhost';
+            $this->db_name = getenv('DB_NAME') ?: 'weatheralert_db';
+            $this->username = getenv('DB_USER') ?: 'root';
+            $this->password = getenv('DB_PASS') ?: '';
+            $this->port = 3306;
         }
     }
-    
+
     public function getConnection() {
-        return $this->connection;
-    }
-    
-    public function query($sql, $params = []) {
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
-    }
-    
-    public function fetchAll($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    public function fetchOne($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    
-    public function insert($table, $data) {
-        $keys = array_keys($data);
-        $fields = implode(', ', $keys);
-        $placeholders = ':' . implode(', :', $keys);
+        $this->conn = null;
         
-        $sql = "INSERT INTO $table ($fields) VALUES ($placeholders)";
-        $this->query($sql, $data);
-        return $this->connection->lastInsertId();
-    }
-    
-    public function update($table, $data, $where, $whereParams = []) {
-        $set = [];
-        foreach ($data as $key => $value) {
-            $set[] = "$key = :$key";
+        try {
+            // Use PostgreSQL for Render, MySQL for local
+            if (getenv('DATABASE_URL')) {
+                // PostgreSQL connection for Render
+                $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name}";
+                $this->conn = new PDO($dsn, $this->username, $this->password);
+            } else {
+                // MySQL connection for local
+                $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4";
+                $this->conn = new PDO($dsn, $this->username, $this->password);
+            }
+            
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            
+        } catch(PDOException $e) {
+            error_log("Connection error: " . $e->getMessage());
+            throw $e;
         }
-        $setString = implode(', ', $set);
         
-        $sql = "UPDATE $table SET $setString WHERE $where";
-        $this->query($sql, array_merge($data, $whereParams));
+        return $this->conn;
     }
 }
 ?>
