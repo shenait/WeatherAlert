@@ -9,29 +9,22 @@ services:
     container_name: weatheralert-backend
     ports:
       - "8080:80"
-    environment:
-      - PORT=80
-      - DB_HOST=db
-      - DB_NAME=weatheralert_db
-      - DB_USER=root
-      - DB_PASS=password
-      - TWILIO_ACCOUNT_SID=AC747f0b849f01b888d5771cf5c279d2d5
-      - TWILIO_AUTH_TOKEN=2fdc89f2e2de56a2605ba4c2bb965ae7
-      - TWILIO_FROM_NUMBER=+13636661642
-    volumes:
-      - .:/var/www/html
+    env_file:
+      - .env
     depends_on:
       - db
+    volumes:
+      - .:/var/www/html
     networks:
       - weatheralert-network
 
-  # MySQL Database (for local development)
+  # MySQL Database
   db:
     image: mysql:8.0
     container_name: weatheralert-db
     environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=weatheralert_db
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
     ports:
       - "3306:3306"
     volumes:
