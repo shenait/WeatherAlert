@@ -29,8 +29,6 @@ function loadEnv($path) {
     }
 }
 
-// Load environment variables
-loadEnv(__DIR__ . '/.env');
 
 // Database configuration from environment variables
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
