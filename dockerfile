@@ -35,7 +35,7 @@ WORKDIR /var/www/html
 # Copy application files (backend only, not frontend)
 COPY *.php /var/www/html/
 COPY Database.php /var/www/html/
-COPY config.php /var/www/html/
+COPY config_env.php /var/www/html/
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /var/www/html/alerts && \
