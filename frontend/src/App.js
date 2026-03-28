@@ -129,9 +129,10 @@ function App() {
     if (user && user.role === 'admin' && tab === 'admin') fetchUsers();
   }, [user, tab]);
 
+  // ✅ FIXED: /get_users.php → /users
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_BASE}/get_users.php`);
+      const response = await fetch(`${API_BASE}/users`);
       const data = await response.json();
       if (data.success) setUsers(data.users);
     } catch (error) {
@@ -244,11 +245,12 @@ function App() {
     }
   };
 
+  // ✅ FIXED: /send_alert.php → /alerts/send
   const sendAlertToAllUsers = async () => {
     if (!alertMessage.trim()) { setSendStatus('Please enter a message'); return; }
     setSending(true); setSendStatus('Sending alerts...');
     try {
-      const response = await fetch(`${API_BASE}/send_alert.php`, {
+      const response = await fetch(`${API_BASE}/alerts/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: alertMessage, parish: parish?.name || 'Grenada', admin_email: user.email })
@@ -265,10 +267,11 @@ function App() {
 
   const selectParish = p => { setParish(p); setDropOpen(false); fetchWeather(p.lat, p.lon, units); };
 
+  // ✅ FIXED: /login.php → /auth/login
   const handleLogin = async (e) => {
     e.preventDefault(); setFormError(''); setFormLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/login.php`, {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
@@ -280,14 +283,15 @@ function App() {
         setPage('dashboard');
         if (data.user.role === 'admin') setTab('admin');
       } else setFormError(data.error || 'Login failed');
-    } catch (err) { setFormError('Connection error. Make sure XAMPP Apache is running.'); }
+    } catch (err) { setFormError('Connection error. Please try again.'); }
     finally { setFormLoading(false); }
   };
 
+  // ✅ FIXED: /register.php → /auth/register
   const handleRegister = async (e) => {
     e.preventDefault(); setFormError(''); setFormLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/register.php`, {
+      const response = await fetch(`${API_BASE}/auth/register`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name, phone, parish: 'saint-george' })
       });
@@ -298,7 +302,7 @@ function App() {
         localStorage.setItem('user', JSON.stringify(data.user));
         setPage('dashboard');
       } else setFormError(data.error || 'Registration failed');
-    } catch (err) { setFormError('Connection error.'); }
+    } catch (err) { setFormError('Connection error. Please try again.'); }
     finally { setFormLoading(false); }
   };
 
