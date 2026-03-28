@@ -43,7 +43,7 @@ WORKDIR /var/www/html
 COPY *.php /var/www/html/
 COPY Database.php /var/www/html/
 COPY config_env.php /var/www/html/
-
+COPY api.php /var/www/html/
 # Copy built React app
 COPY --from=frontend-build /app/build /var/www/html/
 
