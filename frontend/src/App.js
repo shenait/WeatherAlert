@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import risingSunLogo from './rising-sun.png';
 
-const API_BASE = 'http://localhost/alert';
+const API_BASE = 'https://weatheralertgd.onrender.com';
 const OPENMETEO_BASE = "https://api.open-meteo.com/v1/forecast";
 
 const PARISHES = [
