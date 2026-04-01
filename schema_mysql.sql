@@ -64,7 +64,7 @@ CREATE INDEX idx_cached_at ON weather_cache(cached_at);
 -- Insert admin user
 INSERT INTO users (email, password, name, phone, parish, role)
 VALUES (
-    'shenaithomas0323@gmail.com',
+    'shenait0323@gmail.com',
     '$2y$10$kLPEo6qM7sKyJ3xQ4GzXS.vE1NdH/4B1qyuP7FZKjJvxNmXJ8yxgO',
     'System Administrator',
     NULL,
