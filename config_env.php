@@ -9,7 +9,7 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Admin credentials
 define('ADMIN_EMAIL', 'shenait0323@gmail.com');
-define('ADMIN_PASSWORD', '$2y$10$kLPEo6qM7sKyJ3xQ4GzXS.vE1NdH/4B1qyuP7FZKjJvxNmXJ8yxgO');
+define('ADMIN_PASSWORD', '$2y$10$hXkZP9/nReDT1gmpIRuOjurpXk201LO5fpYXEhm40afpmzRmVypCi');
 
 // Twilio configuration
 define('TWILIO_ACCOUNT_SID', getenv('TWILIO_ACCOUNT_SID') ?: '');
