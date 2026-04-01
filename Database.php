@@ -10,11 +10,11 @@ class Database {
         if ($this->conn) return $this->conn;
 
         try {
-            $host     = 'localhost';
-            $port     = '3306';
-            $dbname   = 'weatheralert_db'; // must match your DB name in phpMyAdmin
-            $username = 'root';            // XAMPP default
-            $password = '';               // XAMPP default is empty
+            $host     = 'weatheralert-db-weatheralert2026.b.aivencloud.com';
+            $port     = '18209';
+            $dbname   = 'defaultdb'; 
+            $username = 'avnadmin';            
+            $password = 'AVNS_mXVXD6xJKHD2pYRmrhk';               
 
             $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,

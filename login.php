@@ -8,10 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ✅ LOCAL DATABASE SETTINGS
-$host = 'localhost';
-$dbname = 'weatheralert';
-$username = 'root';
-$password = ''; 
+$host = 'weatheralert-db-weatheralert2026.b.aivencloud.com';
+$dbname = 'defaultdb';
+$username = 'avnadmin';
+$password = 'AVNS_mXVXD6xJKHD2pYRmrhk';
 
 try {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
