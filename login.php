@@ -33,7 +33,7 @@ if (empty($email) || empty($password)) {
 }
 
 // Check if admin
-if ($email === 'shenait0323@gmail.com' && $password === 'WeatherAdmin2024!') {
+if ($email === 'shenaithomas0323@gmail.com' && $password === 'WeatherAdmin2024!') {
     $user = [
         'id' => 0,
         'email' => 'shenaithomas0323@gmail.com',
