@@ -1,58 +1,100 @@
 <?php
 class Database {
-    private $host;
-    private $db_name;
-    private $username;
-    private $password;
-    private $port;
     private $conn;
 
     public function __construct() {
-        // Check if DATABASE_URL exists (Render)
-        $databaseUrl = getenv('DATABASE_URL');
-        
-        if ($databaseUrl) {
-            // Parse Render's DATABASE_URL
-            $dbparts = parse_url($databaseUrl);
-            $this->host = $dbparts['host'];
-            $this->port = $dbparts['port'];
-            $this->db_name = ltrim($dbparts['path'], '/');
-            $this->username = $dbparts['user'];
-            $this->password = $dbparts['pass'];
-        } else {
-            // Local development
-            $this->host = getenv('DB_HOST') ?: 'localhost';
-            $this->db_name = getenv('DB_NAME') ?: 'weatheralert_db';
-            $this->username = getenv('DB_USER') ?: 'root';
-            $this->password = getenv('DB_PASS') ?: '';
-            $this->port = 3306;
-        }
+        $this->conn = null;
     }
 
     public function getConnection() {
-        $this->conn = null;
-        
+        if ($this->conn) return $this->conn;
+
         try {
-            // Use PostgreSQL for Render, MySQL for local
-            if (getenv('DATABASE_URL')) {
-                // PostgreSQL connection for Render
-                $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name};sslmode=require";
-                $this->conn = new PDO($dsn, $this->username, $this->password);
+            $databaseUrl = getenv('DATABASE_URL');
+
+            if ($databaseUrl) {
+                $dbparts = parse_url($databaseUrl);
+                $host = $dbparts['host'];
+                $port = $dbparts['port'] ?? 3306;
+                $dbname = ltrim($dbparts['path'], '/');
+                $username = $dbparts['user'];
+                $password = $dbparts['pass'];
+                $scheme = $dbparts['scheme'];
+
+                if (strpos($scheme, 'mysql') !== false) {
+                    $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+                } else {
+                    $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};sslmode=require";
+                }
+                $this->conn = new PDO($dsn, $username, $password);
             } else {
-                // MySQL connection for local
-                $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4";
-                $this->conn = new PDO($dsn, $this->username, $this->password);
+                // FreeDB MySQL credentials from environment
+                $host = getenv('DB_HOST') ?: 'sql.freedb.tech';
+                $port = getenv('DB_PORT') ?: '3306';
+                $dbname = getenv('DB_NAME') ?: 'freedb_weatheralert-db';
+                $username = getenv('DB_USER') ?: 'freedb_shenai';
+                $password = getenv('DB_PASS') ?: '';
+
+                $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+                $this->conn = new PDO($dsn, $username, $password);
             }
-            
+
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            
+
         } catch(PDOException $e) {
             error_log("Connection error: " . $e->getMessage());
             throw $e;
         }
-        
+
         return $this->conn;
+    }
+
+    public function fetchOne($sql, $params = []) {
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetch();
+        } catch(PDOException $e) {
+            error_log("Query error: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function fetchAll($sql, $params = []) {
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll();
+        } catch(PDOException $e) {
+            error_log("Query error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function insert($table, $data) {
+        try {
+            $columns = implode(', ', array_keys($data));
+            $placeholders = implode(', ', array_fill(0, count($data), '?'));
+            $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->execute(array_values($data));
+            return $this->getConnection()->lastInsertId();
+        } catch(PDOException $e) {
+            error_log("Insert error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function execute($sql, $params = []) {
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->rowCount();
+        } catch(PDOException $e) {
+            error_log("Execute error: " . $e->getMessage());
+            throw $e;
+        }
     }
 }
 ?>
