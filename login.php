@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $host = 'sql.freedb.tech';
 $dbname = 'freedb_weatheralert-db';
 $username = 'freedb_shenai';
-$password = '';
+$password = '9XY$kx#yEy5s6gJ';
 
 try {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
