@@ -14,7 +14,7 @@ class Database {
             $port     = '18209';
             $dbname   = 'defaultdb'; 
             $username = 'avnadmin';            
-            $password = 'AVNS_mXVXD6xJKHD2pYRmrhk';               
+            $password = '';               
 
             $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
