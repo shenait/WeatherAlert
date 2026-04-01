@@ -10,39 +10,22 @@ class Database {
         if ($this->conn) return $this->conn;
 
         try {
-            $databaseUrl = getenv('DATABASE_URL');
+            $host     = 'localhost';
+            $port     = '3306';
+            $dbname   = 'weatheralert_db'; // must match your DB name in phpMyAdmin
+            $username = 'root';            // XAMPP default
+            $password = '';               // XAMPP default is empty
 
-            if ($databaseUrl) {
-                $dbparts = parse_url($databaseUrl);
-                $host = $dbparts['host'];
-                $port = $dbparts['port'] ?? 3306;
-                $dbname = ltrim($dbparts['path'], '/');
-                $username = $dbparts['user'];
-                $password = $dbparts['pass'];
-                $scheme = $dbparts['scheme'];
+            $options = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ];
 
-                if (strpos($scheme, 'mysql') !== false) {
-                    $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
-                } else {
-                    $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};sslmode=require";
-                }
-                $this->conn = new PDO($dsn, $username, $password);
-            } else {
-                // FreeDB MySQL credentials from environment
-                $host = getenv('DB_HOST') ?: 'localhost';
-                $port = getenv('DB_PORT') ?: '3306';
-                $dbname = getenv('DB_NAME') ?: 'weatheralert_db';
-                $username = getenv('DB_USER') ?: 'root';
-                $password = getenv('DB_PASS') ?: '';
+            $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+            $this->conn = new PDO($dsn, $username, $password, $options);
 
-                $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
-                $this->conn = new PDO($dsn, $username, $password);
-            }
-
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-        } catch(PDOException $e) {
+        } catch (\PDOException $e) {
             error_log("Connection error: " . $e->getMessage());
             throw $e;
         }
@@ -55,7 +38,7 @@ class Database {
             $stmt = $this->getConnection()->prepare($sql);
             $stmt->execute($params);
             return $stmt->fetch();
-        } catch(PDOException $e) {
+        } catch (\PDOException $e) {
             error_log("Query error: " . $e->getMessage());
             return null;
         }
@@ -66,7 +49,7 @@ class Database {
             $stmt = $this->getConnection()->prepare($sql);
             $stmt->execute($params);
             return $stmt->fetchAll();
-        } catch(PDOException $e) {
+        } catch (\PDOException $e) {
             error_log("Query error: " . $e->getMessage());
             return [];
         }
@@ -74,13 +57,13 @@ class Database {
 
     public function insert($table, $data) {
         try {
-            $columns = implode(', ', array_keys($data));
+            $columns      = implode(', ', array_keys($data));
             $placeholders = implode(', ', array_fill(0, count($data), '?'));
-            $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
-            $stmt = $this->getConnection()->prepare($sql);
+            $sql          = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+            $stmt         = $this->getConnection()->prepare($sql);
             $stmt->execute(array_values($data));
             return $this->getConnection()->lastInsertId();
-        } catch(PDOException $e) {
+        } catch (\PDOException $e) {
             error_log("Insert error: " . $e->getMessage());
             throw $e;
         }
@@ -91,7 +74,7 @@ class Database {
             $stmt = $this->getConnection()->prepare($sql);
             $stmt->execute($params);
             return $stmt->rowCount();
-        } catch(PDOException $e) {
+        } catch (\PDOException $e) {
             error_log("Execute error: " . $e->getMessage());
             throw $e;
         }
