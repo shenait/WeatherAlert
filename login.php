@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ✅ LOCAL DATABASE SETTINGS
-$host = '127.0.0.1';
+$host = 'localhost';
 $dbname = 'weatheralert';
 $username = 'root';
 $password = ''; 
