@@ -29,7 +29,7 @@ class Database {
                 $this->conn = new PDO($dsn, $username, $password);
             } else {
                 // FreeDB MySQL credentials from environment
-                $host = getenv('DB_HOST') ?: 'localhost';
+                $host = getenv('DB_HOST') ?: '127.0.0.1';
                 $port = getenv('DB_PORT') ?: '3306';
                 $dbname = getenv('DB_NAME') ?: 'weatheralert_db';
                 $username = getenv('DB_USER') ?: 'root';
