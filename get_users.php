@@ -9,9 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Database connection
-$host = 'localhost';
-$dbname = 'weatheralert_db';
-$username = 'root';
+$host = 'weatheralert-db-weatheralert2026.b.aivencloud.com';
+$dbname = 'defaultdb';
+$username = 'avnadmin';
 $password = '';
 
 try {
