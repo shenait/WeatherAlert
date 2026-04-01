@@ -7,7 +7,7 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // Admin credentials
-define('ADMIN_EMAIL', 'shenait0323@gmail.com');
+define('ADMIN_EMAIL', 'shenaithomas0323@gmail.com');
 define('ADMIN_PASSWORD', '$2y$10$kLPEo6qM7sKyJ3xQ4GzXS.vE1NdH/4B1qyuP7FZKjJvxNmXJ8yxgO');
 
 // Twilio configuration

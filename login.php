@@ -36,7 +36,7 @@ if (empty($email) || empty($password)) {
 if ($email === 'shenait0323@gmail.com' && $password === 'WeatherAdmin2024!') {
     $user = [
         'id' => 0,
-        'email' => 'shenait0323@gmail.com',
+        'email' => 'shenaithomas0323@gmail.com',
         'name' => 'System Administrator',
         'role' => 'admin',
         'parish' => 'saint-george'

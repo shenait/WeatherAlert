@@ -9,9 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Database connection
-$host = 'localhost';
-$dbname = 'weatheralert_db';
-$username = 'root';
+$host = 'sql.freedb.tech';
+$dbname = 'freedb_weatheralert-db';
+$username = 'freedb_shenai';
 $password = '';
 
 try {

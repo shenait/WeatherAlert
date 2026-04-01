@@ -10,7 +10,7 @@ RUN npm run build
 
 FROM php:8.2-apache
 
-LABEL maintainer="shenait0323@gmail.com"
+LABEL maintainer="shenaithomas0323@gmail.com"
 
 RUN apt-get update && apt-get install -y \
     git \
