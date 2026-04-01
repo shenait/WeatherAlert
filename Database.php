@@ -36,7 +36,7 @@ class Database {
             // Use PostgreSQL for Render, MySQL for local
             if (getenv('DATABASE_URL')) {
                 // PostgreSQL connection for Render
-                $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name}";
+                $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name};sslmode=require";
                 $this->conn = new PDO($dsn, $this->username, $this->password);
             } else {
                 // MySQL connection for local
